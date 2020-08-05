@@ -46,6 +46,12 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +66,10 @@
     <ProjectReference Include="..\Architecture.Common\Architecture.Common.csproj">
       <Project>{08152e05-190b-4053-baa1-944cea76690e}</Project>
       <Name>Architecture.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Architecture.Web.Service\Architecture.Web.Service.csproj">
+      <Project>{D1E8B22E-3DB2-4E84-AAA7-FF20BF356DA3}</Project>
+      <Name>Architecture.Web.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

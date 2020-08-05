@@ -1,0 +1,46 @@
+﻿@using Architecture.Common
+@model Architecture.Common.Member
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Account)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Tel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.Birthday)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { key = Model.Account.ToString() }) |               
+                @Html.ActionLink("Delete", "Delete", new { key = Model.Account.ToString() })
+            </td>
+        </tr>
+
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+
+        })
+
+
+    </script>
+}

@@ -3,22 +3,68 @@
 }
 <br />
 <div>
-    <p>帳號: <input type="text" id="MemberID" /></p>
+    <p>帳號: <input type="text" id="key" /></p>
 </div>
 <div>
     <input type="button" value="查詢" id="Search" />
 </div>
 
-
+<table width="50%" border="1" cellpadding="0" cellspacing="0">
+    <tr>
+        @*顯示的欄位名*@
+        <td>帳號</td>
+        <td>密碼</td>
+        <td>人名</td>
+        <td>手機</td>
+        <td>電話</td>
+        <td>性別</td>
+        <td>生日</td>
+    </tr>
+    @*資料庫的內容*@
+    <tbody id="bg">
+    </tbody>
+</table>
 
 
 @section scripts{
     <script type="text/javascript">
 
         $(document).ready(function () {
+            $("#Search").click(function () {
+                if ($("#key").val() =="" || $("#key").val()==null) {
+                    alert("請輸入帳號");
+                }
+                else {
+                    Load();
+                }
+                
+
+            })         
+
+        //查詢條件傳入
+        function Load()
+        {
+　　       var key = $("#key").val(); 
+　　      $.ajax({
+            url:"/Home/UserSerach", 
+            data:{key:key}, //查詢值
+            type:"POST",
+            dataType:"JSON",
+            success: function(data){
+                var str = "";
+               
+            　　　　　
+                str = "<tr><td>" + data[0]["Account"] + "</td><td>" + data[0]["Password"]  +
+                    "</td><td>" + data[0]["Name"] + "</td><td>" + data[0]["Phone"] +
+                    "</td><td>" + data[0]["Tel"] + "</td><td>" + data[0]["Gender"] +
+                     "</td><td>" + data[0]["Birthday"] +"</td></tr>";
+                
+             $("#bg").html(str);
 
 
-
+                }       
+            });
+        } 
 
 
         });

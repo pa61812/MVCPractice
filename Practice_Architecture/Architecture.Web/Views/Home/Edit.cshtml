@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+}
+@using Architecture.Common
+@model IEnumerable<Architecture.Common.Member>
+<br />
+
+
+@foreach (var item in Model)
+{
+    <div>
+        <p>帳號:<input type="text" id="UserID" value="@item.Account" readonly /></p>
+    </div>
+    <div>
+        <p>密碼:<input type="text" id="Pass" value="@item.Password"/></p>
+    </div>
+    <div>
+        <p>姓名:<input type="text" id="CName" value="@item.Name"/></p>
+    </div>
+    <div>
+        <p>手機:<input type="text" id="Phone" value="@item.Phone"/></p>
+    </div>
+    <div>
+        <p>電話:<input type="text" id="Tel" value="@item.Tel"/></p>
+    </div>
+    <div>
+        <p> 性別:<input type="text" id="Gender" value="@item.Gender"/></p>
+    </div>
+    <div>
+        <p>生日:<input type="text" id="Birth" value="@item.Birthday"/></p>
+    </div>
+}
+<div class="container">
+    <BR />
+
+
+    <div>
+        <input type="button" id="Saved" value="存檔" />
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#Saved").click(function () {
+                 $.ajax({
+                            url: '/Home/EditMember',
+                            type: 'Post',
+                            data: {
+                                UserID: $("#UserID").val()
+                              , Pass: $("#Pass").val()
+                              , CName: $("#CName").val()
+                              , Phone: $("#Phone").val()
+                              , Tel: $("#Tel").val()
+                              , Gender: $("#Gender").val()
+                              , Birth: $("#Birth").val()
+
+                            },
+                            tradition:true ,
+                            error: function (xhr) {
+
+                                result = false;
+                            },
+                            success: function (data) {
+                                alert(data);
+                                result = true;
+                                if (data=="成功") {
+                                    top.location.href = '/home/Index/'
+                                }
+                                
+                            }
+                        });
+                
+            })
+
+
+        });
+    </script>
+}

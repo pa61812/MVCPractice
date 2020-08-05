@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Architecture.Common;
+using NuGet.Protocol.Plugins;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using System.Web.UI.WebControls;
 
 namespace Architecture.Web.Controllers
 {
     public class HomeController : Controller
     {
+
+        Architecture.Web.Service._Service.MemberFun memberfun = new Service._Service.MemberFun();
         public ActionResult Index()
         {
             return View();
@@ -26,15 +30,18 @@ namespace Architecture.Web.Controllers
 
         public virtual JsonResult Registered(string UserID, string Pass, string CName, string Phone, string Tel, string Gender, string Birth)
         {
-            Architecture.Web.Service._Service.MemberFun AddUser = new Service._Service.MemberFun();
 
 
             string Message = "成功";
 
-            var result = AddUser.Confirmation(UserID, Pass, CName, Phone, Tel, Gender, Birth);
+            var result = memberfun.Confirmation(UserID, Pass, CName, Phone, Tel, Gender, Birth);
             if (result.ToString() == "")
             {
-                AddUser.InsertUser(UserID, Pass, CName, Phone, Tel, Gender, Birth);
+               var InsertResult= memberfun.InsertUser(UserID, Pass, CName, Phone, Tel, Gender, Birth);
+                if (InsertResult !=true)
+                {
+                    Message = "新增失敗";
+                }
             }
             else
             {
@@ -53,9 +60,71 @@ namespace Architecture.Web.Controllers
         #endregion
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            PracticeEntities practiceEntities = new PracticeEntities();
+            var result =practiceEntities.Members.ToList();           
+            return View(result);
+        }
 
-            return View();
+        public JsonResult UserSerach (string key) 
+        {
+            var result = memberfun.SearchUser(key);
+
+            return Json(result);
+        }
+        public ActionResult PartialAllUser()
+        {
+            return PartialView();
+        }
+
+        [HttpGet]
+        public ActionResult Delete(string key)
+        {
+            var result = memberfun.DeleteUser(key) ;
+            
+            return RedirectToAction("Contact", "Home", new { Area = "" });
+        }
+
+        [HttpGet]
+        public ActionResult Edit(string key)
+        {
+
+            PracticeEntities practiceEntities = new PracticeEntities();
+            var result = practiceEntities.Members.Where(x=>x.Account==key).ToList();           
+            return View(result);
+        }
+
+        public virtual JsonResult EditMember(string UserID, string Pass, string CName, string Phone, string Tel, string Gender, string Birth)
+        {
+
+
+            string Message = "成功";
+
+            var result = memberfun.Confirmation("pass", Pass, CName, Phone, Tel, Gender, Birth);
+            if (result.ToString() == "")
+            {  
+                var InsertResult = memberfun.UpdateUser(UserID, Pass, CName, Phone, Tel, Gender, Birth);
+                if (InsertResult != true)
+                {
+                    Message = "修改失敗";
+                }
+            }
+            else
+            {
+                Message = result.ToString();
+            }
+
+
+            return Json(Message);
+        }
+
+
+        [HttpGet]
+        public JsonResult AllUser()
+        {
+
+            var result = memberfun.AllUser();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

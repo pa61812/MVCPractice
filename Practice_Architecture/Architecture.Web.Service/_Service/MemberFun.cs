@@ -1,6 +1,10 @@
 ﻿using Architecture.Common;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.SqlServer;
+using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -10,8 +14,9 @@ namespace Architecture.Web.Service._Service
 {
     public class MemberFun
     {
+        PracticeEntities practiceEntities = new PracticeEntities();
         //新增USER
-        public object InsertUser(string userID, string pass, string cName, string phone, string tel, string gender, string birth)
+        public bool InsertUser(string userID, string pass, string cName, string phone, string tel, string gender, string birth)
         {
             try
             {
@@ -25,22 +30,20 @@ namespace Architecture.Web.Service._Service
                     Gender = gender,
                     Birthday = DateTime.Parse(birth)
                 };
-                PracticeEntities practiceEntities = new PracticeEntities();
+                
                 using (var dbContext = practiceEntities)
                 {
-                    //dbContext.Members.Add(toDb);
-                    //dbContext.SaveChanges();
-                    var userSuppliedId = new SqlParameter("@PostId", PostID);
-                    string sqlQuery = @"select c.Name CategoryTitle, pcm.Id MappingId, p.Title PostTitle from Posts_Categories pcm 
-                                join Categories c on pcm.CategoryId = c.Id
-                                join Posts p on pcm.PostId = p.Id where pcm.PostId =@PostId";
+                    dbContext.Members.Add(toDb);
+                    dbContext.SaveChanges();
+
                 }
                 return true;
             }
-            catch (Exception)
+            catch (DbEntityValidationException ex)
             {
-               // return false;
-                throw;
+                var entityError = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                      
+                return false;
             }
 
 
@@ -48,15 +51,24 @@ namespace Architecture.Web.Service._Service
 
 
         //USER資料檢查
-        public object Confirmation(string userID, string pass, string cName, string phone, string tel, string gender, string birth)
+        public string Confirmation(string userID, string pass, string cName, string phone, string tel, string gender, string birth)
         {
             string Message = "";
-            if (userID == "" || userID == null)
+ 
+            var IsExisits = practiceEntities.Members.Where(x => x.Account == userID).Count();
+
+            if (userID == "" || userID == null )
             {
 
                 Message = "帳號有誤";
                 return (Message);
             }
+            if ( IsExisits >= 1)
+            {
+
+                Message = "用戶已註冊";
+                return (Message);
+            }           
             if (pass == "" || pass == null)
             {
 
@@ -114,6 +126,120 @@ namespace Architecture.Web.Service._Service
             }
 
             catch { return false; }
+
+        }
+
+
+
+        //找單一USER
+        public object SearchUser(string userID)
+        {
+ 
+            var User = practiceEntities.Members.Where(x => x.Account.Contains(userID))
+                                                                  .Select (x=>new {
+                                                                      Account=x.Account,
+                                                                      Password=x.Password,
+                                                                      Name=x.Name,
+                                                                      Phone=x.Phone,
+                                                                      Tel=x.Tel,
+                                                                      Gender =  x.Gender,
+                                                                      Birthday= SqlFunctions.DateName("year", x.Birthday) + "/" + x.Birthday.Value.Month + "/" + SqlFunctions.DateName("day", x.Birthday)
+                                                                  })                                                                  
+                                                                  .ToList();
+
+            return (User);
+
+        }
+        //找所有USER
+        public object AllUser()
+        {
+
+            var User = practiceEntities.Members.Select(x => new {
+                                                                      Account = x.Account,
+                                                                      Password = x.Password,
+                                                                      Name = x.Name,
+                                                                      Phone = x.Phone,
+                                                                      Tel = x.Tel,
+                                                                      Gender = x.Gender,
+                                                                      Birthday = SqlFunctions.DateName("year", x.Birthday) + "/" + x.Birthday.Value.Month + "/" + SqlFunctions.DateName("day", x.Birthday)
+                                                                     // ,Idx = index + 1
+            }) .ToList();
+            var result = User.AsEnumerable()
+                                     .Select((x, index) => new
+                                     {
+                                         Account = x.Account,
+                                         Password = x.Password,
+                                         Name = x.Name,
+                                         Phone = x.Phone,
+                                         Tel = x.Tel,
+                                         Gender = x.Gender,
+                                         Birthday = x.Birthday,
+                                         Idx = index + 1
+                                     }).ToList();
+            return (User);
+
+        }
+
+        //刪除USER
+        public bool DeleteUser(string userID)
+        {
+            try
+            {
+                var DeMember = practiceEntities.Members.Where(x => x.Account == userID).FirstOrDefault();
+
+
+                using (var dbContext = practiceEntities)
+                {
+                    dbContext.Members.Remove(DeMember);
+                    dbContext.SaveChanges();
+
+                }
+                return true;
+            }
+            catch (DbEntityValidationException ex)
+            {
+                var entityError = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                return false;
+            }
+
+
+        }
+
+        public bool UpdateUser(string userID, string pass, string cName, string phone, string tel, string gender, string birth)
+        {
+            try
+            {
+                // Query the database for the row to be updated.
+                var query =
+                    (from mem in practiceEntities.Members
+                    where mem.Account == userID
+                    select mem).ToList();
+
+                // Execute the query, and change the column values
+                // you want to change.
+                foreach (Member mem in query)
+                {
+                    mem.Password = pass;
+                    mem.Name = cName;
+                    mem.Phone = phone;
+                    mem.Tel = tel;
+                    mem.Gender = gender;
+                    mem.Birthday = DateTime.Parse(birth);
+                }
+
+       
+                practiceEntities.SaveChanges();
+    
+                return true;
+            }
+            catch (DbEntityValidationException ex)
+            {
+                var entityError = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                return false;
+            }
+
 
         }
 
