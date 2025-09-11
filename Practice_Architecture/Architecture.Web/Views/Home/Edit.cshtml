@@ -28,7 +28,7 @@
         <p> 性別:<input type="text" id="Gender" value="@item.Gender"/></p>
     </div>
     <div>
-        <p>生日:<input type="text" id="Birth" value="@item.Birthday"/></p>
+        <p>生日:<input type="text" id="Birth" value="@item.Birthday.Value.Year/@item.Birthday.Value.Month/@item.Birthday.Value.Day"/></p>
     </div>
 }
 <div class="container">
@@ -66,7 +66,7 @@
                                 alert(data);
                                 result = true;
                                 if (data=="成功") {
-                                    top.location.href = '/home/Index/'
+                                    top.location.href = '/home/Contact/'
                                 }
                                 
                             }

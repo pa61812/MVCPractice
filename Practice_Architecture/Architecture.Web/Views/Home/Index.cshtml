@@ -30,14 +30,15 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            Load()
             $("#Search").click(function () {
-                if ($("#key").val() =="" || $("#key").val()==null) {
-                    alert("請輸入帳號");
-                }
-                else {
-                    Load();
-                }
-                
+                //if ($("#key").val() =="" || $("#key").val()==null) {
+                //    alert("請輸入帳號");
+                //}
+                //else {
+                //    Load();
+                //}
+                Load();
 
             })         
 
@@ -52,12 +53,16 @@
             dataType:"JSON",
             success: function(data){
                 var str = "";
-               
+
+
+                for (var i = 0; i < data.length; i++) {
+                    str += "<tr><td>" + data[i]["Account"] + "</td><td>" + data[i]["Password"] +
+                        "</td><td>" + data[i]["Name"] + "</td><td>" + data[i]["Phone"] +
+                        "</td><td>" + data[i]["Tel"] + "</td><td>" + data[i]["Gender"] +
+                        "</td><td>" + data[i]["Birthday"] + "</td></tr>";
+                }
             　　　　　
-                str = "<tr><td>" + data[0]["Account"] + "</td><td>" + data[0]["Password"]  +
-                    "</td><td>" + data[0]["Name"] + "</td><td>" + data[0]["Phone"] +
-                    "</td><td>" + data[0]["Tel"] + "</td><td>" + data[0]["Gender"] +
-                     "</td><td>" + data[0]["Birthday"] +"</td></tr>";
+            
                 
              $("#bg").html(str);
 

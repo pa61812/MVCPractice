@@ -112,20 +112,8 @@ namespace Architecture.Web.Service._Service
         private bool ValidateDate(string stringDateValue)
 
         {
-            try
-
-            {
-                CultureInfo CultureInfoDateCulture = new CultureInfo("zh-TW"); //日期文化格式
-
-                DateTime d = DateTime.ParseExact(
-
-                 stringDateValue, "yyyy/MM/dd", CultureInfoDateCulture);
-
-                return true;
-
-            }
-
-            catch { return false; }
+            DateTime ou = new DateTime();
+            return DateTime.TryParse(stringDateValue, out ou);
 
         }
 
@@ -134,20 +122,40 @@ namespace Architecture.Web.Service._Service
         //找單一USER
         public object SearchUser(string userID)
         {
- 
-            var User = practiceEntities.Members.Where(x => x.Account.Contains(userID))
-                                                                  .Select (x=>new {
-                                                                      Account=x.Account,
-                                                                      Password=x.Password,
-                                                                      Name=x.Name,
-                                                                      Phone=x.Phone,
-                                                                      Tel=x.Tel,
-                                                                      Gender =  x.Gender,
-                                                                      Birthday= SqlFunctions.DateName("year", x.Birthday) + "/" + x.Birthday.Value.Month + "/" + SqlFunctions.DateName("day", x.Birthday)
-                                                                  })                                                                  
-                                                                  .ToList();
+            if (userID=="")
+            {
+                var User = practiceEntities.Members
+                                                .Select(x => new {
+                                                    Account = x.Account,
+                                                    Password = x.Password,
+                                                    Name = x.Name,
+                                                    Phone = x.Phone,
+                                                    Tel = x.Tel,
+                                                    Gender = x.Gender,
+                                                    Birthday = SqlFunctions.DateName("year", x.Birthday) + "/" + x.Birthday.Value.Month + "/" + SqlFunctions.DateName("day", x.Birthday)
+                                                })
+                                                .ToList();
+                return (User);
+            }
+            else
+            {
+                var User = practiceEntities.Members.Where(x => x.Account.Contains(userID))
+                                                                .Select(x => new {
+                                                                    Account = x.Account,
+                                                                    Password = x.Password,
+                                                                    Name = x.Name,
+                                                                    Phone = x.Phone,
+                                                                    Tel = x.Tel,
+                                                                    Gender = x.Gender,
+                                                                    Birthday = SqlFunctions.DateName("year", x.Birthday) + "/" + x.Birthday.Value.Month + "/" + SqlFunctions.DateName("day", x.Birthday)
+                                                                })
+                                                                .ToList();
+                return (User);
+            }
 
-            return (User);
+          
+
+           
 
         }
         //找所有USER

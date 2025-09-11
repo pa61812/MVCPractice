@@ -21,5 +21,14 @@ namespace Architecture.Common
         public string Tel { get; set; }
         public string Gender { get; set; }
         public Nullable<System.DateTime> Birthday { get; set; }
+
+        public int Page { get; set; }  // 頁碼
+
+
+        public Member()
+        {
+            Account = string.Empty;
+            Page = 0;
+        }
     }
 }

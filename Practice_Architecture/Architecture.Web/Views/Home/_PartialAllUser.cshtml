@@ -21,7 +21,7 @@
                 @Html.DisplayFor(modelModel => Model.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelModel => Model.Birthday)
+                @Model.Birthday.Value.Year/@Model.Birthday.Value.Month/@Model.Birthday.Value.Day
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { key = Model.Account.ToString() }) |               

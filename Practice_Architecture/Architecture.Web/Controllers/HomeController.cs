@@ -12,7 +12,8 @@ namespace Architecture.Web.Controllers
     public class HomeController : Controller
     {
 
-        Architecture.Web.Service._Service.MemberFun memberfun = new Service._Service.MemberFun();
+        Service._Service.MemberFun memberfun = new Service._Service.MemberFun();
+        private const int PageSize = 10;
         public ActionResult Index()
         {
             return View();
